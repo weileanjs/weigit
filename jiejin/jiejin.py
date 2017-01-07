@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
-from test_date import get_prick
-from test_holiday import strtodatetime
+from .test_date import get_prick
+from .test_holiday import strtodatetime
 import time
 import pandas as pd
 import pymongo
