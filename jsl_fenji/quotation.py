@@ -4,6 +4,14 @@ import json
 import time
 import requests
 
+'''
+    logindata = dict(return_url='http://www.jisilu.cn/',
+                     user_name='************',
+                     password='************',
+                     net_auto_login='1',
+                     _post_type='ajax')'''
+
+
 
 # 分级A的接口
 __funda_url = 'http://www.jisilu.cn/data/sfnew/funda_list/?___t={ctime:d}'
@@ -178,8 +186,8 @@ def fundarb(avolume=0, bvolume=0, ptype='price'):
     s.headers.update(headers)
 
     logindata = dict(return_url='http://www.jisilu.cn/',
-                     user_name='weileanjs',
-                     password='wchsjsl0202',
+                     user_name='****',
+                     password='****',
                      net_auto_login='1',
                      _post_type='ajax')
 
