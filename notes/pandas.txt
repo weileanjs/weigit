@@ -1,0 +1,71 @@
+pandas
+
+tolist()函数转化为list
+	food_info.columns.tolist()
+	
+shape,dtypes,loc显示数据格式
+	food_info.shape   [0,1]
+	food_info.dtypes
+	food_info.loc[[2,5,10]] # 返回行标号为2，5，10三行数据
+	
+sort
+	food_info.sort("Norm_Nutr_Index", inplace=True, ascending=False ) # 通过inplace参数来控制在原表排序，而不是返回一个新的对象；ascending参数用来控制是否升序排序
+
+isnull
+	age_null = pd.isnull(titanic_survival[‘age’])  
+	age_null_true = age_null[ age_null == True]
+	correct_mean_age = sum(titanic_survival['age'][age_null == False]) / len(titanic_survival['age'][age_null == False])
+	mean()方法可以自动过滤缺失数据并计算平均值
+	
+pivot_table 透视图
+	passenger_age = titanic_survival.pivot_table(index='pclass', values='age', aggfunc=np.mean)
+	# index参数指明了用来分类的列，values标签指明了用来计算的列，aggfunc指明了使用什么函数来计算values指定的列
+	passenger_survival = titanic_survival.pivot_table(index=["pclass","sex"], values=["age", "fare"], aggfunc=np.mean)
+	
+dropna()函数来删除具有空数据的行或列
+	# 可以通过axis参数来删除含有空数据的全部列
+	new_titanic_survival = titanic_survival.dropna(axis=1)
+	# 可以通过subset参数来删除在age和sex中含有空数据的全部行
+	new_titanic_survival = titanic_survival.dropna(subset=["age", "sex"])
+
+reset_index
+	titanic_reindexed = titanic_survival.dropna(subset=['age', 'boat']).reset_index(drop=True)   drop:是否删除原索引
+	inplace，如果设置为True就不会返回一个新的DataFrame，而是直接修改该DataFrame
+	fandango_films = fandango.set_index('FILM', inplace=False, drop=True)
+
+Series
+	#对一个Series进行加减乘除运算
+	series_custom/10	#这个语句实际上是对series_custom这个Series中的每个值都进行除法运算，注意，是不会对索引进行运算的
+	# 也可以使用Numpy的函数来进行运算
+	np.max(series_custom) #求出电影分数的最大值
+	
+	# 也可以使用&(and)和 |(or)连接几个判断
+	series_greater_than_50_&_less_than_80 = \
+    series_custom[(series_custom > 50)  & (series_custom < 80) ]
+	
+	当然，也可以直接对两个Series进行运算
+	rt_critics = Series(fandango['RottenTomatoes'].values, index=fandango['FILM']) # 影评人的评分
+	rt_users = Series(fandango['RottenTomatoes_User'].values, index=fandango['FILM']) #用户评分
+	rt_mean = (rt_critics + rt_users) / 2 # 平均分
+	
+apply 函数
+	#对于每一行，假如该行的age字段缺失就显示unknown，age小于18就返回minor，age大于等于18就返回adult
+	def judge(row):
+		if pd.isnull(row['age']) == True :
+			return 'unknown' 
+		return 'minor' if row['age'] < 18 else 'adult'
+	age_labels = titanic_survival.apply(judge, axis=1)
+	print(titanic_survival.columns)
+	
+	# 对选择的列计算总分，在lambda中的x是一个Series，代表了某一列
+	count = float_df.apply(lambda x: np.sum(x))
+	
+	# 计算每部电影的平均分
+	means = float_df.apply(lambda x: np.mean(x), axis = 1)
+	
+drop_duplicates
+	用于返回一个移除了重复行的DataFrame
+	data.drop_duplicates(['k1', 'k2'], take_last=True)
+	
+	
+	
