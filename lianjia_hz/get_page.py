@@ -4,7 +4,9 @@ from multiprocessing import Pool
 import datetime
 from bs4 import BeautifulSoup
 import urllib
+import random
 import pandas as pd
+import requests
 import scipy
 #导入图表库
 import matplotlib.pyplot as plt
@@ -16,16 +18,20 @@ import pymongo
 client = pymongo.MongoClient('localhost',27017)
 db = client['hz_fc']
 hzfc =db['hz_fc']
+proxies = {"http": "http://111.124.205.31:80","https": "https://111.124.205.31:80"}
 
-headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
-'Accept':'text/html;q=0.9,*/*;q=0.8',
-'Accept-Charset':'ISO-8859-1,utf-8;q=0.7,*;q=0.3',
-'Accept-Encoding':'gzip',
-'Connection':'close',
-'Referer':'http://www.baidu.com/link?url=_andhfsjjjKRgEWkj7i9cFmYYGsisrnm2A-TN3XZDQXxvGsM9k9ZZSnikW2Yds4s&amp;amp;wd=&amp;amp;eqid=c3435a7d00006bd600000003582bfd1f'
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
+'Accept':'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+'Accept-Language':'zh-CN,zh;q=0.8',
+'Cache-Control':'max-age=0',
+'Accept-Encoding':'gzip, deflate, sdch',
+'Connection':'keep-alive',
+'Referer':'http://captcha.lianjia.com/?redirect=http%3A%2F%2Fhz.lianjia.com%2Fershoufang%2Fxihu%2F',
+'Host':'hz.lianjia.com',
+'Upgrade-Insecure-Requests':'1'
 }
 now =datetime.datetime.now().strftime('%Y-%m-%d')[0:10]
-area_l = ['xihu','jianggan','gongshu','shangcheng','xiacheng','binjiang','xiaoshan','yuhang']
+area_l = ['xiaoshan'] # 'xihu','jianggan','gongshu','shangcheng','xiacheng','binjiang',,'yuhang'
 base_url = 'http://hz.lianjia.com/ershoufang/'
 def get_house_info(area):
     total_price =[]
@@ -34,9 +40,10 @@ def get_house_info(area):
     p_price = []
     for i in range(1,page_num(area)):
         print(i)
-        response = urllib.request.urlopen(base_url+area+'/'+str(i))
-        html = response.read().decode('utf-8',errors='replace')
-        h_parser=BeautifulSoup(html,'lxml')
+        response = requests.get(base_url+area+'/'+str(i),proxies=proxies)  #,proxies=proxies
+        response.encoding = 'SO-8859-1'
+        response.encoding = 'gb2312'
+        h_parser=BeautifulSoup(response.text,'lxml')
         tot_price = h_parser.select('div.totalPrice  span')
         for p in tot_price:
             total_price.append(p.text)
@@ -91,14 +98,23 @@ def get_house_info(area):
 
 def page_num(area):
     url_p_num = 'http://hz.lianjia.com/ershoufang/{}'
-    response = urllib.request.urlopen(url_p_num.format(area))
-    html = response.read().decode('utf-8',errors='replace')
-    h_parser=BeautifulSoup(html,'lxml')
+    print(url_p_num.format(area))
+    # response = urllib.request.urlopen(url_p_num.format(area))
+    response = requests.get(url_p_num.format(area),headers=headers,proxies=proxies)
+    # html = response.read().decode('utf-8',errors='replace')
+    h_parser=BeautifulSoup(response.text,'lxml')
     p_num = int(h_parser.select('div.page-box.fr div ')[0].get('page-data').split(',')[0].split(':')[1])+1
     return p_num
+# for i in area_l:
+#     print(i)
+#     try:
+#         print( page_num(i))
+#     except IndexError:
+#         print(i ,'is  not  ok')
+
 
 if __name__ == '__main__':
-    pool = Pool(processes=5)
+    pool = Pool(processes=1)
     pool.map(get_house_info,area_l)
     pool.close()
     pool.join()

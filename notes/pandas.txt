@@ -66,6 +66,7 @@ apply 函数
 drop_duplicates
 	用于返回一个移除了重复行的DataFrame
 	data.drop_duplicates(['k1', 'k2'], take_last=True)
-	
+
+np.frompyfunc(lambda x:)
 	
 	

@@ -18,7 +18,7 @@ d = {"reportdate":"20160930","basiceps":'基本每股收益',"epsdiluted":'每�
   "salegrossprofitrto":'销售毛利率(%)',"mainbusiincome":'主营业务收入',"mainbusiprofit":'主营业务利润',"totprofit":'利润总额',
   "netprofit":'净利润',"totalassets":'资产总额',"totalliab":'负债总额',"totsharequi":'股东权益合计',"operrevenue":'经营活动产生的现金流量净额',
   "invnetcashflow":'投资活动产生的现金流量净额',"finnetcflow":'筹资活动产生的现金流量净额',"chgexchgchgs":'汇率变动对现金及现金等价物的影响',
-  "cashnetr":'现金及现金等价物净增加额',"cashequfinbal":'期末现金及现金等价物余额','pe':'pe','fzl':'负债率'}
+  "cashnetr":'现金及现金等价物净增加额',"cashequfinbal":'期末现金及现金等价物余额','pe':'pe','fzl':'负债率','price':'价格'}
 
 
 class Stock_show(object):
@@ -104,10 +104,10 @@ class Stock_show(object):
         # data_y2 = self.merge_datas()['totsharequi']
         plt.grid(color='#95a5a6',linestyle='--', linewidth=1,axis='y',alpha=0.4)
         plt.xlabel('季度')
-        plt.ylabel('pe')
+        plt.ylabel(d[self.cs])
         plt.title(self.code)
         #plt.ylim(2300000000)
-        plt.xticks(a,code_x)
+        plt.xticks(a,code_x,rotation=45)
         plt.plot(a, data_y1,color='#99CC01',alpha=0.8)
         plt.show()
 
@@ -135,7 +135,7 @@ class Stock_show(object):
         legend2=ax2.legend(loc=(.02,.86),fontsize=10)
         legend1.get_frame().set_facecolor('#FFFFFF')
         # legend2.get_frame().set_facecolor('#FFFFFF')
-        plt.xticks(a,code_x)
+        plt.xticks(a,code_x,rotation=45)
         plt.show()
 
 
@@ -158,23 +158,24 @@ class Stock_show(object):
             plt.plot(a, pdccs_ed['mean_'],label = '均值',linestyle='-.', linewidth=2,alpha=5)
             plt.grid(color='#95a5a6',linestyle='--', linewidth=1,axis='y',alpha=0.4)
             plt.xlabel('季度')
-            plt.ylabel(y_ccs)
+            plt.ylabel(d[y_ccs])
             if 'title' in self.codes:
                 plt.title(self.codes['title'])
             else:
-                plt.title('%s:%s'%(y_codes,y_ccs))
+                plt.title('%s:%s'%(y_codes,d[y_ccs]))
             # plt.ylim(0,50)
-            plt.xticks(a,code_x)
+            plt.xticks(a,code_x,rotation=45)
             plt.legend()
             plt.show()
         else:
             print('code_kw is None')
 
 
-code_args = {'codes':'601633,000625,600104,601238','ccs':'pe',}
+code_args = {'codes':'000625,601633,601238,600104','ccs':'salegrossprofitrto',}
 
-a = Stock_show('601633',cs='pe',q='one',sty=2005,**code_args)
+a = Stock_show('600375',cs='pe',q='mid',sty=2005,**code_args,cpl=['mainbusiincome','mainbusiprofit'])
 # print(a.to_pandas()[['price','pe','index_t',"basiceps"]])
-# a. polshow()
-# # a.polshows()
-a.stocks_comp()
+a. polshow()
+a.polshows()
+# a.stocks_comp()
+# "mainbusiincome":'主营业务收入',"mainbusiprofit":'主营业务利润'
