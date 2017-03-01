@@ -1,13 +1,12 @@
 import requests
-import json
 from bs4 import BeautifulSoup
 import pandas as pd
 import re
-import lxml
-import time
+import sqlite3
 from multiprocessing import Pool
-import time
 from page_to_sql import page_to_sql3,saved_urls,err_urls, item_urls,s_urls,er_urls,del_url
+
+cate = 'WB & IP Reagents'
 
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
 'Accept':'text/html, */*; q=0.01',
@@ -51,7 +50,7 @@ def get_page(url):
     soup = BeautifulSoup(req.text,'lxml')
     art_no_ = re.search(r'<h1 class="title" itemprop="name"> (.+?)</h1>',req.text).group(1)
     id = ''
-    category = 'Buffers & Dyes'
+    category = cate
     supplier = 'cst'
     art_no = art_no_.split('#')[1]
     name = art_no_.split('#')[0].split("&")[0]
@@ -79,23 +78,30 @@ def get_page(url):
       'pid',pid)
     page_to_sql3(category,art_no,name,size,url,storage,price,description, data_sheet,pid)
 
-left = list(set(item_urls())-set(s_urls()))
 
-
-print(item_urls())
-
-print(left)
-get_page('https://www.cellsignal.com/products/buffers-dyes/chaps-cell-extract-buffer-10x/9852?N=102284+4294956287&Nrpp=200&No=%7Boffset%7D&fromPage=plp')
-
-# for u in  left:
-#     print(u)
-#     try:
-#         get_page(u)
-#         saved_urls(u)
-#         del_url(u)
-#     except Exception as e:
-#         print(e)
-#         err_urls(u,e)
+try:
+    left = list(set(item_urls())-set(s_urls()))
+    print(len(left))
+    for u in  left:
+        print(u)
+        try:
+            get_page(u)
+            saved_urls(u)
+            del_url(u)
+        except Exception as e:
+            print(e)
+            err_urls(u,e)
+except Exception as er:
+    print(er)
+    for u in  item_urls():
+        print(u)
+        try:
+            get_page(u)
+            saved_urls(u)
+            del_url(u)
+        except Exception as e:
+            print(e)
+            err_urls(u,e)
 
 
 # get_page('https://www.cellsignal.com/products/buffers-dyes/immunohistochemistry-application-solutions-kit-rabbit/13079?N=102284+4294956287&fromPage=plp')

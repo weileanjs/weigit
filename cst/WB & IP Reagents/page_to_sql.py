@@ -3,7 +3,7 @@ import pandas as pd
 import sqlite3
 import re
 
-db = 'Buffers & Dyes.db'
+db = 'WB & IP Reagents.db'
 table = 'item_details'
 
 def page_to_sql3(category,art_no,name,size,url,storage,price,description, data_sheet,pid):
@@ -70,7 +70,7 @@ def item_urls():
 def s_urls():
     item_urls_ = []
     conn = sqlite3.connect(db)
-    cursor = conn.execute("SELECT url  from saved_urls")
+    cursor = conn.execute("SELECT url from item_details")
     for row in cursor:
         item_urls_.append(row[0])
     s_urls_ = list(set(item_urls_))

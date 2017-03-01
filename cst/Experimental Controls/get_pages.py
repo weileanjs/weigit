@@ -9,6 +9,8 @@ from multiprocessing import Pool
 import time
 from page_to_sql import page_to_sql3,saved_urls,err_urls, item_urls,s_urls,er_urls,del_url
 
+cate = 'Experimental Controls'
+
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
 'Accept':'text/html, */*; q=0.01',
 'Accept-Language':'zh-CN,zh;q=0.8',
@@ -51,7 +53,7 @@ def get_page(url):
     soup = BeautifulSoup(req.text,'lxml')
     art_no_ = re.search(r'<h1 class="title" itemprop="name"> (.+?)</h1>',req.text).group(1)
     id = ''
-    category = 'Buffers & Dyes'
+    category = cate
     supplier = 'cst'
     art_no = art_no_.split('#')[1]
     name = art_no_.split('#')[0].split("&")[0]
@@ -80,14 +82,11 @@ def get_page(url):
     page_to_sql3(category,art_no,name,size,url,storage,price,description, data_sheet,pid)
 
 left = list(set(item_urls())-set(s_urls()))
+print(len(left))
 
 
-print(item_urls())
 
-print(left)
-get_page('https://www.cellsignal.com/products/buffers-dyes/chaps-cell-extract-buffer-10x/9852?N=102284+4294956287&Nrpp=200&No=%7Boffset%7D&fromPage=plp')
-
-# for u in  left:
+# for u in  item_urls():
 #     print(u)
 #     try:
 #         get_page(u)

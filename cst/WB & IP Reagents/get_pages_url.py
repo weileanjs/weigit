@@ -11,7 +11,7 @@ import pymssql
 # proxies = {"http": "http://111.124.205.31:80","https": "https://111.124.205.31:80"}
 
 # client = pymongo.MongoClient('localhost',27017)
-db = 'Buffers & Dyes.db'
+db = 'WB & IP Reagents.db'
 table = 'item_urls'
 
 headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36',
@@ -22,10 +22,10 @@ headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 
 'Connection':'keep-alive',
 'Referer':'https://www.cellsignal.com/',
 }
-base_url = 'https://www.cellsignal.com/browse/buffers-dyes?N=102284+4294956287&No=%7Boffset%7D&Nrpp=200'
+base_url = 'https://www.cellsignal.com/browse/wb-ip-reagents?N=102310+4294956287&No=%7Boffset%7D&Nrpp=200'
 
 
-# print(soup)
+
 def get_urls():
     req = requests.get(base_url,headers=headers)
     soup = BeautifulSoup(req.text,'lxml')
@@ -51,7 +51,7 @@ def get_urls():
         conn.execute(sql)
         conn.commit()
     conn.close()
-
+get_urls()
 
 
 
